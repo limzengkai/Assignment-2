@@ -1,4 +1,5 @@
 Pizza Delivery Website
+---------------------
 This project is a pizza delivery website where users can place orders for their favorite pizzas online. The website is designed with security in mind to protect against various common web application vulnerabilities.
 
 Features
