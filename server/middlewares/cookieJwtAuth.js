@@ -1,16 +1,21 @@
 const jwt = require("jsonwebtoken");
 
-exports.cookieJwtAuth = (req, res, next) => {
-    console.log(req.cookies); // [Object: null prototype] {}
-  const token = req.cookies["token"];
+exports.verifyToken = (req, res, next) => {
+  const token = req.cookies.accessToken;
+  console.log("REQUEST",req.cookies)
+  console.log("Eneter cookies verift token: ", token)
   if (!token) {
     return res.status(401).json({ error: "User not logged in" });
   }
+
   try {
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = user;
+    console.log("IAM HERE")
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.log("DECODED", decoded);
+    req.user = decoded;
     next();
   } catch (error) {
+    console.log("ERROR", error);
     res.clearCookie("token");
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({ error: "Token expired" });

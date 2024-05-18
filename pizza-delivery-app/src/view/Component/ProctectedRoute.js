@@ -1,14 +1,32 @@
-// components/ProtectedRoute.js
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const ProtectedRoute = ({ children }) => {
-  const token = Cookies.get('accessToken');
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-//   if (!token) {
-//     return <Navigate to="/login" />;
-//   }
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        await axios.get("http://localhost:3001/protected", {
+          withCredentials: true,
+        });
+        setIsAuthenticated(true);
+        console.log("Authenticated");
+      } catch (error) {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return children;
 };
